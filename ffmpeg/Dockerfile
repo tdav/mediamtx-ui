@@ -1,4 +1,6 @@
-FROM linuxserver/ffmpeg:latest
+# Proprietary build: includes libfdk_aac, NVENC, NVDEC, libx265, libvpx, etc.
+# Check latest tag: https://hub.docker.com/r/linuxserver/ffmpeg/tags
+FROM linuxserver/ffmpeg:8.0.1-cli-ls61
 
 RUN apt-get update -y
 RUN apt-get install v4l-utils uvcdynctrl psmisc -y
