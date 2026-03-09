@@ -61,21 +61,3 @@ services:
       - MEDIAMTX_METRICS_URL_BASE=http://mediamtx:9996/metrics
     # devices: (disabled - no camera devices on Windows)
     #   - '/dev/video0:/dev/video0'
-
-  browser:
-    build:
-      context: ./browser
-      dockerfile: Dockerfile
-    container_name: browser
-    command: ["/app/start.sh"]
-    shm_size: 1g
-    restart: unless-stopped
-    volumes:
-      - ./browser/start.sh:/app/start.sh:ro
-    environment:
-      DISPLAY: ":99"
-    networks:
-      - camnet
-    devices:
-      - '/dev/video10:/dev/video10'
-      - '/dev/video11:/dev/video11'

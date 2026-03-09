@@ -106,6 +106,44 @@ section "Building Docker images"
 docker compose build --no-cache
 info "Docker images built"
 
+# ─── Start services ───────────────────────────
+section "Starting services"
+docker compose up -d
+info "All services started in background"
+
+# ─── Enable Docker on boot ────────────────────
+section "Enabling Docker on boot"
+systemctl enable docker
+info "Docker enabled on system boot"
+
+# ─── Systemd service for auto-start ───────────
+section "Creating systemd service"
+
+APP_DIR="$(pwd)"
+
+cat > /etc/systemd/system/mediamtx-ui.service <<EOF
+[Unit]
+Description=mediamtx-ui Docker Compose stack
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=${APP_DIR}
+ExecStart=/usr/bin/docker compose up -d --remove-orphans
+ExecStop=/usr/bin/docker compose down
+TimeoutStartSec=120
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable mediamtx-ui.service
+info "mediamtx-ui.service enabled — will start automatically on boot"
+
 # ─── Done ─────────────────────────────────────
 section "Setup complete"
 echo ""
@@ -113,8 +151,10 @@ echo -e "  ${BOLD}Generate password hash:${NC}"
 echo -e "    docker compose run --rm mediamtxui node generate_auth.js"
 echo -e "    → paste the hash into config/auth.json"
 echo ""
-echo -e "  ${BOLD}Start all services:${NC}"
-echo -e "    docker compose up -d"
+echo -e "  ${BOLD}Service management:${NC}"
+echo -e "    systemctl start mediamtx-ui    # start"
+echo -e "    systemctl stop mediamtx-ui     # stop"
+echo -e "    systemctl status mediamtx-ui   # status"
 echo ""
 echo -e "  ${BOLD}Web interface:${NC}  http://$(hostname -I | awk '{print $1}'):$(grep SERVER_PORT .env | cut -d= -f2)"
 echo ""
