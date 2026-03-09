@@ -1,6 +1,23 @@
 # 🎥mediamtx-ui
 > For mediaMTX version **`1.16.0`**
 
+ Конфиг mediaMTX находится здесь:
+
+  /var/www/mediamtx-ui/config/mediamtx.yml
+
+  Он монтируется в контейнер как read-only (из docker-compose.yml):
+  volumes:
+    - ./config/mediamtx.yml:/mediamtx.yml:ro
+
+  Редактировать нужно на хосте, а не внутри контейнера:
+  nano /var/www/mediamtx-ui/config/mediamtx.yml
+
+  После изменений — перезапустить mediamtx контейнер:
+  docker compose restart mediamtx
+
+
+
+
 Configure your [mediaMTX server](https://mediamtx.org/) with this dependency free (so far) web ui.
 - It is running in a dockerized setup.
 - The UI has it's own webserver, running in a separate container.  

@@ -34,6 +34,23 @@
 
 ---
 
+
+ Конфиг mediaMTX находится здесь:
+
+  /var/www/mediamtx-ui/config/mediamtx.yml
+
+  Он монтируется в контейнер как read-only (из docker-compose.yml):
+  volumes:
+    - ./config/mediamtx.yml:/mediamtx.yml:ro
+
+  Редактировать нужно на хосте, а не внутри контейнера:
+  nano /var/www/mediamtx-ui/config/mediamtx.yml
+
+  После изменений — перезапустить mediamtx контейнер:
+  docker compose restart mediamtx
+
+
+
 ## 2. Клонирование проекта
 
 ```bash
